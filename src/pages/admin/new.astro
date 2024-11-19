@@ -1,0 +1,94 @@
+---
+import { getSession } from 'auth-astro/server';
+import BaseHead from '../../components/BaseHead.astro';
+import { SITE_TITLE } from '../../consts';
+
+const session = await getSession(Astro.request);
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Tulis Artikel Baru - ${SITE_TITLE}`} description="Tulis artikel baru" />
+  </head>
+  <body class="bg-gray-50">
+    <div class="min-h-screen">
+      <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex">
+              <div class="flex-shrink-0 flex items-center">
+                <a href="/admin" class="text-xl font-bold">Admin Dashboard</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+          <div class="bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+              <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                Tulis Artikel Baru
+              </h3>
+              <form action="/api/posts/create" method="post" class="space-y-6">
+                <div>
+                  <label for="title" class="block text-sm font-medium text-gray-700">
+                    Judul
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label for="description" class="block text-sm font-medium text-gray-700">
+                    Deskripsi
+                  </label>
+                  <input
+                    type="text"
+                    name="description"
+                    id="description"
+                    required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label for="content" class="block text-sm font-medium text-gray-700">
+                    Konten (Markdown)
+                  </label>
+                  <textarea
+                    id="content"
+                    name="content"
+                    rows="20"
+                    required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  ></textarea>
+                </div>
+
+                <div class="flex justify-end">
+                  <button
+                    type="submit"
+                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    Publikasikan
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

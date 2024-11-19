@@ -1,0 +1,91 @@
+---
+import { getSession } from 'auth-astro/server';
+import BaseHead from '../../components/BaseHead.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const session = await getSession(Astro.request);
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+
+const posts = await getCollection('blog');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Admin Dashboard - ${SITE_TITLE}`} description="Admin dashboard" />
+  </head>
+  <body class="bg-gray-50">
+    <div class="min-h-screen">
+      <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex">
+              <div class="flex-shrink-0 flex items-center">
+                <h1 class="text-xl font-bold">Admin Dashboard</h1>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <form action="/api/auth/signout" method="post">
+                <button type="submit" class="text-gray-600 hover:text-gray-900">
+                  Logout
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Artikel</h2>
+            <a
+              href="/admin/new"
+              class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            >
+              Tulis Artikel Baru
+            </a>
+          </div>
+
+          <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul class="divide-y divide-gray-200">
+              {
+                posts.map((post) => (
+                  <li>
+                    <div class="px-4 py-4 sm:px-6">
+                      <div class="flex items-center justify-between">
+                        <a
+                          href={`/admin/edit/${post.slug}`}
+                          class="text-lg font-medium text-blue-600 hover:text-blue-800"
+                        >
+                          {post.data.title}
+                        </a>
+                        <div class="flex space-x-2">
+                          <a
+                            href={`/admin/edit/${post.slug}`}
+                            class="text-gray-600 hover:text-gray-900"
+                          >
+                            Edit
+                          </a>
+                        </div>
+                      </div>
+                      <div class="mt-2">
+                        <p class="text-sm text-gray-600">
+                          {post.data.description}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
